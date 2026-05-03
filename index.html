@@ -225,7 +225,7 @@ function GuildGame(){
   const [dlg,setDlg]=useState(null);const [sRes,setSRes]=useState(null);
   const [gName,setGName]=useState(DEF_NAMES.guild[Math.floor(Math.random()*3)]);
   const [rName,setRName]=useState(DEF_NAMES.receptionist[Math.floor(Math.random()*3)]);
-  const [mName,setMName]=useState("");const [mTitle,setMTitle]=useState("さま");
+  const [mName,setMName]=useState(DEF_NAMES.master[Math.floor(Math.random()*3)].name);const [mTitle,setMTitle]=useState("さま");
   const [setupStep,setSetupStep]=useState(0);
   const [pool,setPool]=useState([]);
   const [transition,setTransition]=useState(false);
@@ -345,13 +345,16 @@ function GuildGame(){
 
   // ===== HOME =====
   if(sc==="home"){const disp=quests.filter(q=>q.status==="dispatched");const nGxp=gl+1<GL.length?GL[gl+1]:"MAX";
-    const morningMsg=scCleared?`${mt}、シナリオは達成済みです！ 残りの日数も自由にお過ごしくださいませ。`:`おはようございます、${mt}。`+(s0&&dLeft!==null?`${s0.title}まであと${dLeft}日ですね。きょうも1日頑張りましょう！`:"きょうも頑張りましょう！");
+    const morningMsg=scCleared?`${mt}、シナリオは達成済みです！ 残りの日数も自由にお過ごしくださいませ。`
+      :avC.length===0&&actC.length===0?`おはようございます、${mt}。まずは冒険者の登録をいたしましょう！ 「冒険者の登録」ボタンからお手続きくださいませ。`
+      :avC.length===0&&actC.length>0?`${mt}、全員が派遣中でございます。きょうはもうできることがなさそうですね。翌日に進みましょうか。`
+      :`おはようございます、${mt}。`+(s0&&dLeft!==null?`${s0.title}まであと${dLeft}日ですね。きょうも1日頑張りましょう！`:"きょうも頑張りましょう！");
     const canAdvance=!sRes;
     return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center",backgroundAttachment:"fixed"}}>
       {transOverlay}
-      {dlg?.type==="sc_intro"&&<Dialog onClose={()=>setDlg({type:"sc_cond"})} btnText="はい"><RecBig rn={rName}><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div></RecBig><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
+      {dlg?.type==="sc_intro"&&<Dialog onClose={()=>setDlg({type:"sc_cond"})} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_cond"&&<Dialog onClose={()=>setDlg(null)} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>📋 達成条件</div><RecBig text={s0.cond.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
-      {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDay(1);setQuests([]);setLogs([]);setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
+      {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDay(1);setQuests([]);setLogs([]);setChars(p=>p.map(c=>c.status==="dispatched"||c.status==="resting"?{...c,status:"active",restDays:0}:c));setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_reward"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecBig text={`${mt}、報酬のご報告です！\n\n💰 ${s0.reward.gold}ゴールドをお受け取りくださいませ。\n⭐ 評判が${s0.reward.rep}上がりました。\n\n期限までの残り日数は自由にお使いいただけます。準備が整いましたら、次のシナリオに進みましょう！`} rn={rName}/></Dialog>}
       {dlg?.type==="sc_advance"&&<Dialog onClose={()=>{if(si<SC.length-1){const ni=si+1;setSi(ni);setSD(0);setSRes(null);setScCleared(false);setQuests([]);setDlg({type:"sc_intro"});}else{setSRes(null);setScCleared(false);setDlg({type:"msg",text:"全シナリオを達成しました！ おめでとうございます！\n\nこれからも自由にギルドを運営していきましょう。"});}}} btnText="確認"><RecBig text={si<SC.length-1?`${mt}、期限となりました。次のシナリオに進みましょう！`:`${mt}、全てのシナリオを達成されました！\n\n本当にお疲れさまでございました！`} rn={rName}/></Dialog>}
       {dlg?.type==="dispatched"&&<Dialog onClose={()=>{setDlg(null);}} btnText="確認"><RecSays text={`「${dlg.title}」の依頼に、${dlg.names}を派遣いたしました。無事に帰ってきてくれるといいですね。`} rn={rName}/></Dialog>}
