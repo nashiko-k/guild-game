@@ -178,43 +178,43 @@ function gCh(c){return c.charm+eqB(c.weapon,"charm")+eqB(c.armor,"charm")+eqB(c.
 
 const SC=[
   {id:1,title:"借金の返済",deadline:8,maxM:2,cls:["warrior"],
-    intro:"{m}は、この小さな冒険者ギルドを引き継いだばかりでいらっしゃいます。\n\n実は……前任のギルドマスターが残した借金が500ゴールドございまして……。\n\n返済の期限は8日後でございます。冒険者をギルドにお迎えし、依頼をこなして、返済に必要なゴールドを稼ぎましょう！",
-    cond:"8日以内に所持金を1000ゴールド以上に増やす必要がございます。\n\n冒険者を最大2名まで登録できます。現在は戦士クラスのみ登録可能です。\n\n報酬の高い依頼を優先的に選び、効率よく稼いでまいりましょう。",
+    intro:"{m}は、この小さな冒険者ギルドを引き継いだばかりでいらっしゃいます。\n\n実は……前任のギルドマスターが残した借金が500ゴールドございまして……。\n\n返済の期限は8日後でございます。\n\n早速、戦士クラスの冒険者が入隊を希望しておりますよ！",
+    cond:"8日以内に所持金を1000ゴールド以上に増やす必要がございます。\n\n報酬の高い依頼を優先的に選び、効率よく稼いでまいりましょう。",
     req:{gold:1000},
     succ:"{m}、やりましたね！！\n\n無事に借金を完済することができました！\n前任者の負の遺産を見事に清算されましたね。\n\nこれで心置きなくギルドの運営に集中できます！\nもっと大きなお仕事を受けることもできそうですね……！",
     fail:"{m}……申し訳ございません。期限までに借金を返済できませんでした。\n\nですが、冒険者の皆さんの経験や装備はそのままでございます。初日からやり直すことができますので、ご安心くださいませ。",
     reward:{gold:300,rep:3}},
   {id:2,title:"隊商の護衛任務",deadline:12,maxM:4,cls:["warrior","mage"],
-    intro:"借金を返済したことで、ギルドの信用が回復してまいりました。\n\n領主さまから正式な護衛依頼が届いております！\n隣町への隊商を護衛し、無事にお届けする任務でございます。\n\n今回から魔術師の方も登録できるようになりました！ 最大4名まで冒険者を抱えることができますよ。\n\nただし、護衛任務にふさわしい実力をお見せする必要がございます。装備を整え、幅広い依頼で実績を積みましょう。",
-    cond:"12日以内に以下の条件を全て満たす必要がございます：\n\n🏰 ギルドレベル3以上に到達する\n👥 冒険者4人以上を揃える\n⚔️ 2人以上に装備を持たせる\n📋 3種類以上の依頼カテゴリを達成する\n\n評判を効率よく稼ぎ、装備を整え、さまざまな種類の依頼をこなしましょう！",
-    req:{guildLevel:3,minMembers:4,minEquipped:2,minQuestCats:3},
+    intro:"借金を返済したことで、ギルドの信用が回復してまいりました。\n\n領主さまから正式な護衛依頼が届いております！\n隣町への隊商を護衛し、無事にお届けする任務でございます。\n\n今回から魔術師クラスの冒険者が加入いたします！",
+    cond:"12日以内にギルドレベル3以上に到達し、3種類以上の依頼カテゴリを達成する必要がございます。\n\n装備を整え、幅広い依頼で実績を積みましょう！",
+    req:{guildLevel:3,minQuestCats:3},
     succ:"{m}、隊商は無事に隣町に到着いたしました！\n\n商人さまたちがとても感謝してくださっていますよ。\n「あのギルド、なかなかやるじゃないか」ですって！\n\nギルドの名前がどんどん広がっていきますね！",
     fail:"{m}……護衛体制を整えることができませんでした。\n\n冒険者の皆さんの経験と装備はそのままです。初日からやり直せますので、もう一度挑戦いたしましょう！",
     reward:{gold:500,rep:5}},
   {id:3,title:"盗賊団の壊滅",deadline:15,maxM:6,cls:["warrior","mage","cleric","thief"],
-    intro:"{m}、大変でございます！\n\n……いえ、やりがいのあるお仕事が舞い込んでまいりました！\n\n街道沿いに盗賊団が出没し、商人さまたちが被害を受けていらっしゃいます。\n領主さまから壊滅のご命令がございました。\n\n今回から僧侶と盗賊の方も登録できるようになりました！ 最大6名までの大所帯ですよ。",
-    cond:"15日以内にギルドレベルを4以上にし、冒険者を6人以上にする必要がございます。\n\n僧侶と盗賊が新たに登録可能になりました。\n多様な能力を活かし、さまざまな依頼に対応してまいりましょう。",
-    req:{guildLevel:4,minMembers:6},
+    intro:"{m}、大変でございます！\n\n……いえ、やりがいのあるお仕事が舞い込んでまいりました！\n\n街道沿いに盗賊団が出没し、商人さまたちが被害を受けていらっしゃいます。\n領主さまから壊滅のご命令がございました。\n\n今回は僧侶クラスの冒険者が加入いたします！",
+    cond:"15日以内にギルドレベル4以上に到達する必要がございます。\n\n多様な能力を活かし、さまざまな依頼に対応してまいりましょう。",
+    req:{guildLevel:4},
     succ:"{m}、盗賊団を壊滅させることができました！！\n\n街道に平和が戻り、交易が活発になっております。\nもう私たちのギルドは、この地域で知らない方はいらっしゃいませんよ！\n\nこれからも素敵な冒険が待っていることでしょう！",
     fail:"{m}……盗賊団の壊滅に必要な戦力を集めることができませんでした。\n\n冒険者と装備はそのままですので、初日からやり直しましょう！",
     reward:{gold:800,rep:8}},
 ,
   {id:4,title:"闇商人の摘発",deadline:14,maxM:8,cls:["warrior","mage","cleric","thief"],
-    intro:"{m}、ギルドの評判が広まり、領主から直々のご依頼が届きました。\n\n町の裏で暗躍する闇商人ネットワークを摘発してほしいとのことです。\n\n盗賊クラスの冒険者が新たに加入いたします！ 最大8名まで冒険者を抱えられます。",
+    intro:"{m}、ギルドの評判が広まり、領主から直々のご依頼が届きました。\n\n町の裏で暗躍する闇商人ネットワークを摘発してほしいとのことです。\n\n今回は盗賊クラスの冒険者が加入いたします！",
     cond:"14日以内にギルドレベル5以上に到達し、4種類以上の依頼カテゴリを達成する必要がございます。",
     req:{guildLevel:5,minQuestCats:4},
     succ:"{m}、見事でございます！ 闇商人ネットワークを壊滅させました！",
     fail:"{m}……残念ながら期限内に目標を達成できませんでした。",
     reward:{gold:600,rep:6}},
   {id:5,title:"古代遺跡の調査",deadline:16,maxM:10,cls:["warrior","mage","cleric","thief","elf"],
-    intro:"{m}、森の奥で古代の遺跡が発見されました！\n\n王国学術院からの依頼で、遺跡の調査と遺物の回収を行います。\n\nエルフクラスの冒険者が新たに加入いたします！ 最大10名体制です。",
+    intro:"{m}、森の奥で古代の遺跡が発見されました！\n\n王国学術院からの依頼で、遺跡の調査と遺物の回収を行います。\n\n今回はエルフクラスの冒険者が加入いたします！",
     cond:"16日以内にギルドレベル6以上に到達し、5種類以上の依頼カテゴリを達成する必要がございます。",
     req:{guildLevel:6,minQuestCats:5},
     succ:"{m}、素晴らしい成果でございます！ 古代の秘宝を発掘しました！",
     fail:"{m}……遺跡の調査は期限内に完了できませんでした。",
     reward:{gold:700,rep:7}},
   {id:6,title:"王国防衛戦",deadline:18,maxM:12,cls:["warrior","mage","cleric","thief","elf","dwarf"],
-    intro:"{m}、一大事でございます！\n\n隣国の軍勢が国境に迫っているとの報告です。王国防衛のため、あらゆる冒険者の力を結集いたします。\n\nドワーフクラスが解禁！ 最大12名の冒険者で最終決戦に臨みます！",
+    intro:"{m}、一大事でございます！\n\n隣国の軍勢が国境に迫っているとの報告です。王国防衛のため、あらゆる冒険者の力を結集いたします。\n\n今回はドワーフクラスの冒険者が加入いたします！",
     cond:"18日以内にギルドレベル7以上に到達し、全6カテゴリの依頼を達成する必要がございます。\n\nこれが最後のシナリオです。全力を尽くしましょう！",
     req:{guildLevel:7,minQuestCats:6},
     succ:"{m}、我々は勝ちました！！\n\n{m}の名は伝説として語り継がれることでしょう。\n本当にお疲れさまでございました！",
@@ -369,8 +369,8 @@ function GuildGame(){
   const checkSc=useCallback((g,r,cs,d)=>{
     if(!s0||sRes||scCleared)return;const req=s0.req;const mem=cs.filter(c=>c.status!=="retired").length;
     let cgl=0;for(let i=GL.length-1;i>=0;i--){if(r>=GL[i]){cgl=i;break;}}
-    let ok=true;if(req.gold&&g<req.gold)ok=false;if(req.guildLevel&&cgl<req.guildLevel)ok=false;if(req.minMembers&&mem<req.minMembers)ok=false;
-    if(req.minEquipped){const eq=cs.filter(c=>c.status!=="retired"&&(c.weapon||c.armor||c.accessory)).length;if(eq<req.minEquipped)ok=false;}
+    let ok=true;if(req.gold&&g<req.gold)ok=false;if(req.guildLevel&&cgl<req.guildLevel)ok=false;
+    
     if(req.minQuestCats&&doneQCats.size<req.minQuestCats)ok=false;
     if(ok){setScCleared(true);sfxSuccess();setDlg({type:"sc_end",result:"success"});return;}
     if(d>=s0.deadline){setSRes("failure");sfxFail();setDlg({type:"sc_end",result:"failure"});}
@@ -456,7 +456,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.2.0</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.2.1</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -468,20 +468,27 @@ function GuildGame(){
   // ===== HOME =====
   if(sc==="home"){const disp=quests.filter(q=>q.status==="dispatched");const nGxp=gl+1<GL.length?GL[gl+1]:"MAX";
     const morningMsg=scCleared?`${mt}、シナリオは達成済みです！ 残りの日数も自由にお過ごしくださいませ。`
-      :avC.length===0&&actC.length===0?`おはようございます、${mt}。まずは冒険者の登録をいたしましょう！ 「冒険者の登録」ボタンからお手続きくださいませ。`
+      :avC.length===0&&actC.length===0?`おはようございます、${mt}。冒険者がまだおりませんね。シナリオを進めて仲間を増やしましょう！`
       :avC.length===0&&actC.length>0?`${mt}、全員が派遣中でございます。きょうはもうできることがなさそうですね。翌日に進みましょうか。`
       :`おはようございます、${mt}。`+(s0&&dLeft!==null?`${s0.title}まであと${dLeft}日ですね。きょうも1日頑張りましょう！`:"きょうも頑張りましょう！");
     const canAdvance=!sRes;
     return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center",backgroundAttachment:"fixed"}}>
       {transOverlay}
       {dlg?.type==="name_new_chars"&&<Dialog btnText={null} onClose={()=>{}}><RecBig text="新しい冒険者が加入いたしました！ お名前をお付けくださいませ。" rn={rName}>{pendingNames.map((c,i)=>{const isCurrent=i===nameIdx;return (<div key={c.id} style={{padding:"8px 0",borderBottom:`1px solid ${T.pb}22`,opacity:i<nameIdx?0.5:1}}><div style={{display:"flex",alignItems:"center",gap:8}}><Pt cid={c.classId} g={c.gender} sz="sm"/><div style={{flex:1}}><div style={{fontSize:12,color:T.td}}>{c.className}（{c.gender}）</div>{isCurrent?<input value={c.name} onChange={e=>{const v=e.target.value;setPendingNames(p=>p.map((x,j)=>j===i?{...x,name:v}:x));}} maxLength={8} style={{width:"100%",padding:"6px",fontSize:14,background:"rgba(0,0,0,0.3)",border:`1px solid ${T.pb}`,borderRadius:6,color:T.tb,boxSizing:"border-box"}}/>:<div style={{fontSize:14,color:T.tb,fontWeight:"bold"}}>{c.name}</div>}</div></div></div>);})}<div style={{display:"flex",gap:8,marginTop:12}}>{nameIdx<pendingNames.length-1?<button onClick={()=>{sfxClick();setNameIdx(n=>n+1);}} style={{...bp,flex:1}}>次へ →</button>:<button onClick={()=>{sfxSuccess();setChars(p=>[...p,...pendingNames]);setPendingNames([]);setNameIdx(0);setDlg(null);}} style={{...bp,flex:1}}>全員加入！</button>}</div></RecBig></Dialog>}
+      {dlg?.type==="new_greets"&&<Dialog onClose={()=>setDlg({type:"sc_cond"})} btnText="よろしくお願いします！">
+        {dlg.members.map((m,i)=>(<div key={i} style={{marginBottom:16,textAlign:"center"}}>
+          <Pt cid={m.classId} g={m.gender} sz="md"/>
+          <div style={{fontSize:14,color:T.gb,fontWeight:"bold",marginTop:6}}>{m.name}（{CLS[m.classId]?.name}）</div>
+          <div style={{fontSize:14,color:T.text,lineHeight:1.8,marginTop:6,fontStyle:"italic",padding:"0 8px"}}>「{m.greet}」</div>
+        </div>))}
+      </Dialog>}
       {dlg?.type==="name_new_members"&&<Dialog btnText={null} onClose={()=>setDlg(null)}>
         <RecBig text={`${mt}、新しい冒険者が入隊を希望しております！ お名前をお付けくださいませ。`} rn={rName}/>
         {newMembers.map((m,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,marginTop:10}}>
           <Pt cid={m.classId} g={m.gender} sz="sm"/>
           <div style={{flex:1}}><div style={{fontSize:11,color:T.td}}>{CLS[m.classId]?.name}（{m.gender}）</div>
           <input value={m.name} onChange={e=>{const nm=[...newMembers];nm[i]={...nm[i],name:e.target.value};setNewMembers(nm);}} placeholder="名前" maxLength={8} style={{width:"100%",padding:"6px",fontSize:14,background:"rgba(0,0,0,0.3)",border:`1px solid ${T.pb}`,borderRadius:6,color:T.tb,boxSizing:"border-box"}}/></div></div>))}
-        <button onClick={()=>{newMembers.forEach(m=>{if(m.name.trim()){const cl=CLS[m.classId];setChars(prev=>[...prev,{id:gid(),name:m.name.trim(),classId:m.classId,gender:m.gender,level:1,xp:0,combat:cl.combat,intel:cl.intel,charm:cl.charm,status:"active",weapon:null,armor:null,accessory:null,restDays:0}]);}});sfxSuccess();setNewMembers([]);setDlg({type:"sc_cond"});}} style={{...bp,width:"100%",marginTop:16}}>冒険者を迎え入れる</button>
+        <button onClick={()=>{const created=[];newMembers.forEach(m=>{if(m.name.trim()){const cl=CLS[m.classId];const gKey=m.classId+"_"+(m.gender==="男"?"m":"f");const greets=GREETINGS[gKey]||[];const greet=greets.length>0?greets[Math.floor(Math.random()*greets.length)].replace(/\{n\}/g,m.name.trim()):(m.name.trim()+"です。よろしくお願いします。");created.push({classId:m.classId,gender:m.gender,name:m.name.trim(),greet});setChars(prev=>[...prev,{id:gid(),name:m.name.trim(),classId:m.classId,gender:m.gender,level:1,xp:0,combat:cl.combat,intel:cl.intel,charm:cl.charm,status:"active",weapon:null,armor:null,accessory:null,restDays:0}]);}});sfxSuccess();setNewMembers([]);if(created.length>0){setDlg({type:"new_greets",members:created});}else{setDlg({type:"sc_cond"});}}} style={{...bp,width:"100%",marginTop:16}}>冒険者を迎え入れる</button>
       </Dialog>}
       {dlg?.type==="sc_intro"&&<Dialog onClose={()=>{const cls=SC_NEW_CLASSES[si]||[];const nm=[];cls.forEach(c=>{["m","f"].forEach(g=>{const name=getDefaultName(c,g);nm.push({classId:c,gender:g==="m"?"男":"女",name:name||""});});});if(nm.length>0){setNewMembers(nm);setDlg({type:"name_new_members"});}else{setDlg({type:"sc_cond"});}}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_cond"&&<Dialog onClose={()=>{setDlg(null);}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>📋 達成条件</div><RecBig text={s0.cond.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
@@ -519,8 +526,6 @@ function GuildGame(){
           {!scCleared&&<div style={{fontSize:14,color:T.text,lineHeight:1.8}}>
             {s0.req.gold&&<div>{gold>=s0.req.gold?"✅":"❌"} 💰 所持金　{gold.toLocaleString()} / {s0.req.gold.toLocaleString()} G</div>}
             {s0.req.guildLevel&&<div>{gl>=s0.req.guildLevel?"✅":"❌"} 🏰 ギルドLv　{gl} / {s0.req.guildLevel}</div>}
-            {s0.req.minMembers&&<div>{actC.length>=s0.req.minMembers?"✅":"❌"} 👥 冒険者数　{actC.length} / {s0.req.minMembers}人</div>}
-            {s0.req.minEquipped&&<div>{actC.filter(c=>c.weapon||c.armor||c.accessory).length>=s0.req.minEquipped?"✅":"❌"} ⚔️ 装備済み　{actC.filter(c=>c.weapon||c.armor||c.accessory).length} / {s0.req.minEquipped}人</div>}
             {s0.req.minQuestCats&&<div>{doneQCats.size>=s0.req.minQuestCats?"✅":"❌"} 📋 依頼種類　{doneQCats.size} / {s0.req.minQuestCats}種</div>}
           </div>}
           
