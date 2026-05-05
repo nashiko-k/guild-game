@@ -18,6 +18,10 @@ function sfxLevelUp(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(
 function sfxSuccess(){[523,659,784,1047,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.18,"square",0.08),i*140));}
 function sfxFail(){playTone(400,0.3,"sawtooth",0.06);setTimeout(()=>playTone(300,0.3,"sawtooth",0.06),300);setTimeout(()=>playTone(200,0.5,"sawtooth",0.06),600);}
 function sfxSell(){playTone(900,0.08,"sine",0.06);setTimeout(()=>playTone(700,0.1,"sine",0.06),90);}
+function sfxEquip(){playTone(600,0.08,"sine",0.06);setTimeout(()=>playTone(900,0.1,"sine",0.06),80);}
+function sfxOpen(){playTone(500,0.06,"triangle",0.05);setTimeout(()=>playTone(700,0.06,"triangle",0.05),60);}
+function sfxClose(){playTone(700,0.06,"triangle",0.05);setTimeout(()=>playTone(500,0.06,"triangle",0.05),60);}
+function sfxResult(){playTone(440,0.1,"square",0.05);setTimeout(()=>playTone(550,0.1,"square",0.05),100);setTimeout(()=>playTone(660,0.15,"square",0.05),200);}
 // === BGM ===
 let _bgmInterval=null;
 const BGM_NOTES=[262,294,330,349,392,440,349,330];
@@ -163,6 +167,7 @@ const QCAT={
 
 const SC_AUTO_CHARS={0:["warrior"],1:["mage"],2:["cleric","thief"]};
 const QCAT_LEVELS=[0,3,7,12,18,25];
+const SC_NEW_CLASSES=[["warrior"],["mage"],["cleric"],["thief"],["elf"],["dwarf"]];
 function canEq(eid,cid){const e=EQ.find(x=>x.id===eid);if(!e)return false;if(!e.cls)return true;return e.cls.includes(cid);}
 function eqRarityColor(bonus){if(bonus>=10)return"#fbbf24";if(bonus>=8)return"#a78bfa";if(bonus>=6)return"#60a5fa";if(bonus>=4)return"#4ade80";return"#cccccc";}
 function eqRarityLabel(bonus){if(bonus>=10)return"★★★★★";if(bonus>=8)return"★★★★";if(bonus>=6)return"★★★";if(bonus>=4)return"★★";return"★";}
@@ -193,7 +198,28 @@ const SC=[
     succ:"{m}、盗賊団を壊滅させることができました！！\n\n街道に平和が戻り、交易が活発になっております。\nもう私たちのギルドは、この地域で知らない方はいらっしゃいませんよ！\n\nこれからも素敵な冒険が待っていることでしょう！",
     fail:"{m}……盗賊団の壊滅に必要な戦力を集めることができませんでした。\n\n冒険者と装備はそのままですので、初日からやり直しましょう！",
     reward:{gold:800,rep:8}},
-];
+,
+  {id:4,title:"闇商人の摘発",deadline:14,maxM:8,cls:["warrior","mage","cleric","thief"],
+    intro:"{m}、ギルドの評判が広まり、領主から直々のご依頼が届きました。\n\n町の裏で暗躍する闇商人ネットワークを摘発してほしいとのことです。\n\n盗賊クラスの冒険者が新たに加入いたします！ 最大8名まで冒険者を抱えられます。",
+    cond:"14日以内にギルドレベル5以上に到達し、4種類以上の依頼カテゴリを達成する必要がございます。",
+    req:{guildLevel:5,minQuestCats:4},
+    succ:"{m}、見事でございます！ 闇商人ネットワークを壊滅させました！",
+    fail:"{m}……残念ながら期限内に目標を達成できませんでした。",
+    reward:{gold:600,rep:6}},
+  {id:5,title:"古代遺跡の調査",deadline:16,maxM:10,cls:["warrior","mage","cleric","thief","elf"],
+    intro:"{m}、森の奥で古代の遺跡が発見されました！\n\n王国学術院からの依頼で、遺跡の調査と遺物の回収を行います。\n\nエルフクラスの冒険者が新たに加入いたします！ 最大10名体制です。",
+    cond:"16日以内にギルドレベル6以上に到達し、5種類以上の依頼カテゴリを達成する必要がございます。",
+    req:{guildLevel:6,minQuestCats:5},
+    succ:"{m}、素晴らしい成果でございます！ 古代の秘宝を発掘しました！",
+    fail:"{m}……遺跡の調査は期限内に完了できませんでした。",
+    reward:{gold:700,rep:7}},
+  {id:6,title:"王国防衛戦",deadline:18,maxM:12,cls:["warrior","mage","cleric","thief","elf","dwarf"],
+    intro:"{m}、一大事でございます！\n\n隣国の軍勢が国境に迫っているとの報告です。王国防衛のため、あらゆる冒険者の力を結集いたします。\n\nドワーフクラスが解禁！ 最大12名の冒険者で最終決戦に臨みます！",
+    cond:"18日以内にギルドレベル7以上に到達し、全6カテゴリの依頼を達成する必要がございます。\n\nこれが最後のシナリオです。全力を尽くしましょう！",
+    req:{guildLevel:7,minQuestCats:6},
+    succ:"{m}、我々は勝ちました！！\n\n{m}の名は伝説として語り継がれることでしょう。\n本当にお疲れさまでございました！",
+    fail:"{m}……残念ながら防衛準備が整いませんでした。もう一度挑戦いたしましょう。",
+    reward:{gold:1000,rep:10}}];
 
 function getQF(si){
 const ALL=[
@@ -295,6 +321,7 @@ function GuildGame(){
   const [doneQTitles,setDoneQTitles]=useState([]); // completed quest titles (don't repeat)
   const [qCatCounts,setQCatCounts]=useState({}); // quest category completion counts for guild type levels
   const [bgmOn,setBgmOn]=useState(false);
+  const [newMembers,setNewMembers]=useState([]);
   const [pendingNames,setPendingNames]=useState([]); // chars waiting to be named
   const [nameIdx,setNameIdx]=useState(0); // current char being named
 
@@ -412,7 +439,7 @@ function GuildGame(){
     for(const p of sorted){const e=EQ.find(x=>x.id===p.eqId);if(!e)continue;
       const slot=e.type==="weapon"?"weapon":e.type==="armor"?"armor":"accessory";
       const cands=nc.filter(c=>c.status!=="retired"&&!c[slot]&&canEq(p.eqId,c.classId));
-      if(cands.length>0){if(slot==="accessory"&&e.stat){cands.sort((a,b)=>{const d=(CLS[b.classId]?.[e.stat]||0)-(CLS[a.classId]?.[e.stat]||0);return d!==0?d:b.level-a.level;});}const best=cands[0];nc=nc.map(c=>c.id===best.id?{...c,[slot]:p.eqId}:c);{const pidx=np.findIndex(x=>x.eqId===p.eqId&&x.assignedTo===null);if(pidx>=0)np[pidx]={...np[pidx],assignedTo:best.id};}}}
+      if(cands.length>0){if(slot==="accessory"&&e.stat){cands.sort((a,b)=>{const d=(CLS[b.classId]?.[e.stat]||0)-(CLS[a.classId]?.[e.stat]||0);return d!==0?d:b.level-a.level;});}const best=cands[0];nc=nc.map(c=>c.id===best.id?{...c,[slot]:p.eqId}:c);{const pidx=np.findIndex(x=>x.pid===p.pid);if(pidx>=0)np[pidx]={...np[pidx],assignedTo:best.id};}}}
     setChars(nc);setPool(np);setDlg({type:"msg",text:"全冒険者に装備を最適配分いたしました！"});
   },[pool,chars]);
 
@@ -422,7 +449,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.0.1</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.1.0</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -441,7 +468,15 @@ function GuildGame(){
     return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center",backgroundAttachment:"fixed"}}>
       {transOverlay}
       {dlg?.type==="name_new_chars"&&<Dialog btnText={null} onClose={()=>{}}><RecBig text="新しい冒険者が加入いたしました！ お名前をお付けくださいませ。" rn={rName}>{pendingNames.map((c,i)=>{const isCurrent=i===nameIdx;return (<div key={c.id} style={{padding:"8px 0",borderBottom:`1px solid ${T.pb}22`,opacity:i<nameIdx?0.5:1}}><div style={{display:"flex",alignItems:"center",gap:8}}><Pt cid={c.classId} g={c.gender==="男"?"m":"f"} sz="sm"/><div style={{flex:1}}><div style={{fontSize:12,color:T.td}}>{c.className}（{c.gender}）</div>{isCurrent?<input value={c.name} onChange={e=>{const v=e.target.value;setPendingNames(p=>p.map((x,j)=>j===i?{...x,name:v}:x));}} maxLength={8} style={{width:"100%",padding:"6px",fontSize:14,background:"rgba(0,0,0,0.3)",border:`1px solid ${T.pb}`,borderRadius:6,color:T.tb,boxSizing:"border-box"}}/>:<div style={{fontSize:14,color:T.tb,fontWeight:"bold"}}>{c.name}</div>}</div></div></div>);})}<div style={{display:"flex",gap:8,marginTop:12}}>{nameIdx<pendingNames.length-1?<button onClick={()=>{sfxClick();setNameIdx(n=>n+1);}} style={{...bp,flex:1}}>次へ →</button>:<button onClick={()=>{sfxSuccess();setChars(p=>[...p,...pendingNames]);setPendingNames([]);setNameIdx(0);setDlg(null);}} style={{...bp,flex:1}}>全員加入！</button>}</div></RecBig></Dialog>}
-      {dlg?.type==="sc_intro"&&<Dialog onClose={()=>setDlg({type:"sc_cond"})} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
+      {dlg?.type==="name_new_members"&&<Dialog btnText={null} onClose={()=>setDlg(null)}>
+        <RecBig text={`${mt}、新しい冒険者が入隊を希望しております！ お名前をお付けくださいませ。`} rn={rName}/>
+        {newMembers.map((m,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,marginTop:10}}>
+          <Pt cid={m.classId} g={m.gender==="男"?"m":"f"} sz="sm"/>
+          <div style={{flex:1}}><div style={{fontSize:11,color:T.td}}>{CLS[m.classId]?.name}（{m.gender}）</div>
+          <input value={m.name} onChange={e=>{const nm=[...newMembers];nm[i]={...nm[i],name:e.target.value};setNewMembers(nm);}} placeholder="名前" maxLength={8} style={{width:"100%",padding:"6px",fontSize:14,background:"rgba(0,0,0,0.3)",border:`1px solid ${T.pb}`,borderRadius:6,color:T.tb,boxSizing:"border-box"}}/></div></div>))}
+        <button onClick={()=>{newMembers.forEach(m=>{if(m.name.trim()){const cl=CLS[m.classId];setChars(prev=>[...prev,{id:gid(),name:m.name.trim(),classId:m.classId,gender:m.gender,level:1,xp:0,combat:cl.combat,intel:cl.intel,charm:cl.charm,status:"active",weapon:null,armor:null,accessory:null,restDays:0}]);}});sfxSuccess();setNewMembers([]);setDlg({type:"sc_cond"});}} style={{...bp,width:"100%",marginTop:16}}>冒険者を迎え入れる</button>
+      </Dialog>}
+      {dlg?.type==="sc_intro"&&<Dialog onClose={()=>{const cls=SC_NEW_CLASSES[si]||[];const nm=[];cls.forEach(c=>{["m","f"].forEach(g=>{const name=getDefaultName(c,g);nm.push({classId:c,gender:g==="m"?"男":"女",name:name||""});});});if(nm.length>0){setNewMembers(nm);setDlg({type:"name_new_members"});}else{setDlg({type:"sc_cond"});}}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_cond"&&<Dialog onClose={()=>{const pn=autoAddChars(si);if(pn.length>0){setPendingNames(pn);setNameIdx(0);setDlg({type:"name_new_chars"});}else{setDlg(null);}}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>📋 達成条件</div><RecBig text={s0.cond.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDay(1);setQuests(prev=>prev.filter(q=>q.status==="dispatched"));setLogs([]);setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_reward"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecBig text={`${mt}、報酬のご報告です！\n\n💰 ${s0.reward.gold}ゴールドをお受け取りくださいませ。\n⭐ 評判が${s0.reward.rep}上がりました。\n\n期限までの残り日数は自由にお使いいただけます。準備が整いましたら、次のシナリオに進みましょう！`} rn={rName}/></Dialog>}
@@ -534,7 +569,7 @@ function GuildGame(){
           {[["weapon","⚔️ 武器"],["armor","🛡️ 防具"],["accessory","💍 アクセサリ"]].map(([slot,label])=>{const eqId=c[slot];const item=eqId?EQ.find(x=>x.id===eqId):null;const avail=pool.filter(p=>p.assignedTo===null&&EQ.find(e=>e.id===p.eqId)?.type===slot&&canEq(p.eqId,c.classId));
             return (<div key={slot} style={{marginBottom:10,padding:"8px 0",borderBottom:`1px solid ${T.pb}22`}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:13}}><span style={{color:T.td}}>{label}</span><span style={{color:item?eqRarityColor(item.bonus):T.td,fontWeight:item?"bold":"normal"}}>{item?`${item.name}（${item.desc}）`:"なし"}</span></div>
               <div style={{display:"flex",gap:6,marginTop:6,flexWrap:"wrap"}}>{item&&<button onClick={()=>{setPool(p=>p.map(x=>x.eqId===eqId&&x.assignedTo===c.id?{...x,assignedTo:null}:x));setChars(p=>p.map(x=>x.id===c.id?{...x,[slot]:null}:x));}} style={{...bb,padding:"4px 12px",fontSize:11}}>外す</button>}
-                {avail.map((p,i)=>{const e=EQ.find(x=>x.id===p.eqId);return (<button key={i} onClick={()=>{if(c[slot])setPool(pr=>pr.map(x=>x.eqId===c[slot]&&x.assignedTo===c.id?{...x,assignedTo:null}:x));setPool(pr=>{const np=[...pr];const idx=np.findIndex(x=>x.eqId===p.eqId&&x.assignedTo===null);if(idx>=0)np[idx]={...np[idx],assignedTo:c.id};return np;});setChars(pr=>pr.map(x=>x.id===c.id?{...x,[slot]:p.eqId}:x));}} style={{...bb,padding:"4px 12px",fontSize:11,color:e?eqRarityColor(e.bonus):T.tb}}>{e?.name}</button>);})}
+                {avail.map((p,i)=>{const e=EQ.find(x=>x.id===p.eqId);return (<button key={i} onClick={()=>{if(c[slot])setPool(pr=>{const idx=pr.findIndex(x=>x.eqId===c[slot]&&x.assignedTo===c.id);if(idx>=0){const np=[...pr];np[idx]={...np[idx],assignedTo:null};return np;}return pr;});setPool(pr=>{const np=[...pr];const idx=np.findIndex(x=>x.eqId===p.eqId&&x.assignedTo===null);if(idx>=0)np[idx]={...np[idx],assignedTo:c.id};return np;});setChars(pr=>pr.map(x=>x.id===c.id?{...x,[slot]:p.eqId}:x));}} style={{...bb,padding:"4px 12px",fontSize:11,color:e?eqRarityColor(e.bonus):T.tb}}>{e?.name}</button>);})}
               </div></div>);
           })}
         </div>
@@ -544,8 +579,8 @@ function GuildGame(){
 
   // ===== SHOP =====
   if(sc==="shop"){return (<div style={cs}>
-    {dlg?.type==="confirmBuy"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={`${dlg.item.price}ゴールドの「${dlg.item.name}」を購入なさいますか？\n\n${dlg.item.desc}の効果がございます。`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setGold(g=>g-dlg.item.price);setPool(p=>[...p,{eqId:dlg.item.id,assignedTo:null}]);sfxBuy();setDlg({type:"msg",text:`「${dlg.item.name}」を購入いたしました！ ギルドの共有在庫に追加されましたよ。`});}} style={{...bp,flex:1}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
-    {dlg?.type==="confirmSell"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={`「${dlg.item.name}」を${dlg.sellPrice}ゴールドで売却なさいますか？\n\nこの操作は取り消せません。`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setGold(g=>g+dlg.sellPrice);setPool(p=>p.filter((_,idx)=>idx!==dlg.poolIdx));sfxSell();setDlg({type:"msg",text:`「${dlg.item.name}」を${dlg.sellPrice}ゴールドで売却いたしました。`});}} style={{...bp,flex:1}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
+    {dlg?.type==="confirmBuy"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={`${dlg.item.price}ゴールドの「${dlg.item.name}」を購入なさいますか？\n\n${dlg.item.desc}の効果がございます。`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setGold(g=>g-dlg.item.price);setPool(p=>[...p,{pid:gid(),eqId:dlg.item.id,assignedTo:null}]);sfxBuy();setDlg({type:"msg",text:`「${dlg.item.name}」を購入いたしました！ ギルドの共有在庫に追加されましたよ。`});}} style={{...bp,flex:1}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
+    {dlg?.type==="confirmSell"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={`「${dlg.item.name}」を${dlg.sellPrice}ゴールドで売却なさいますか？\n\nこの操作は取り消せません。`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setGold(g=>g+dlg.sellPrice);setPool(p=>p.filter(x=>x.pid!==dlg.poolPid));sfxSell();setDlg({type:"msg",text:`「${dlg.item.name}」を${dlg.sellPrice}ゴールドで売却いたしました。`});}} style={{...bp,flex:1}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
     {dlg?.type==="msg"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecSays text={dlg.text} rn={rName}/></Dialog>}
     <div style={hs}><button onClick={()=>{sfxClick();chSc("home");}} style={{...bb,padding:"6px 14px",fontSize:13}}>← 戻る</button><span style={{color:T.gold,fontWeight:"bold",fontSize:14}}>🏪 商店</span><span style={{color:T.gb,fontSize:14,fontWeight:"bold"}}>💰 {gold.toLocaleString()} G</span></div>
     <div style={bs}>
@@ -557,7 +592,7 @@ function GuildGame(){
         </div>);})}</div>))}
       {pool.length>0&&(<div style={ps}><div style={{fontSize:14,color:T.td,marginBottom:8,fontWeight:"bold"}}>📦 ギルド装備一覧</div>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr style={{borderBottom:`1px solid ${T.pb}`}}><th style={{textAlign:"left",padding:"4px 0",color:T.td}}>装備名</th><th style={{textAlign:"left",color:T.td}}>効果</th><th style={{textAlign:"left",color:T.td}}>装備者</th><th style={{textAlign:"left",color:T.td}}>売却</th></tr></thead>
-          <tbody>{pool.map((p,i)=>{const e=EQ.find(x=>x.id===p.eqId);const owner=p.assignedTo?chars.find(c=>c.id===p.assignedTo):null;const sellPrice=e?Math.floor(e.price*0.7):0;return (<tr key={i} style={{borderBottom:`1px solid ${T.pb}22`}}><td style={{padding:"6px 0",color:e?eqRarityColor(e.bonus):T.tb}}>{e?.name}</td><td style={{color:T.td}}>{e?.desc}</td><td style={{color:owner?T.accent:T.td}}>{owner?owner.name:"未装備"}</td><td>{!owner&&<button onClick={()=>setDlg({type:"confirmSell",poolIdx:i,item:e,sellPrice})} style={{...bb,padding:"2px 8px",fontSize:10,color:T.gold}}>売{sellPrice}G</button>}</td></tr>);})}</tbody></table>
+          <tbody>{pool.map((p,i)=>{const e=EQ.find(x=>x.id===p.eqId);const owner=p.assignedTo?chars.find(c=>c.id===p.assignedTo):null;const sellPrice=e?Math.floor(e.price*0.7):0;return (<tr key={i} style={{borderBottom:`1px solid ${T.pb}22`}}><td style={{padding:"6px 0",color:e?eqRarityColor(e.bonus):T.tb}}>{e?.name}</td><td style={{color:T.td}}>{e?.desc}</td><td style={{color:owner?T.accent:T.td}}>{owner?owner.name:"未装備"}</td><td>{!owner&&<button onClick={()=>setDlg({type:"confirmSell",poolPid:p.pid,item:e,sellPrice})} style={{...bb,padding:"2px 8px",fontSize:10,color:T.gold}}>売{sellPrice}G</button>}</td></tr>);})}</tbody></table>
       </div>)}
     </div></div>);
   }
