@@ -184,9 +184,9 @@ const SC=[
     succ:"{m}、やりましたね！！\n\n無事に借金を完済することができました！\n前任者の負の遺産を見事に清算されましたね。\n\nこれで心置きなくギルドの運営に集中できます！\nもっと大きなお仕事を受けることもできそうですね……！",
     fail:"{m}……申し訳ございません。期限までに借金を返済できませんでした。\n\nですが、冒険者の皆さんの経験や装備はそのままでございます。初日からやり直すことができますので、ご安心くださいませ。",
     reward:{gold:300,rep:3}},
-  {id:2,title:"隊商の護衛任務",deadline:12,maxM:4,cls:["warrior","mage"],
+  {id:2,title:"隊商の護衛任務",deadline:15,maxM:4,cls:["warrior","mage"],
     intro:"借金を返済したことで、ギルドの信用が回復してまいりました。\n\n領主さまから正式な護衛依頼が届いております！\n隣町への隊商を護衛し、無事にお届けする任務でございます。\n\n今回から魔術師クラスの冒険者が加入いたします！",
-    cond:"12日以内にギルドレベル3以上に到達し、3種類以上の依頼カテゴリを達成する必要がございます。\n\n装備を整え、幅広い依頼で実績を積みましょう！",
+    cond:"15日以内にギルドレベル3以上に到達し、3種類以上の依頼カテゴリを達成する必要がございます。\n\n装備を整え、幅広い依頼で実績を積みましょう！",
     req:{guildLevel:3,minQuestCats:3},
     succ:"{m}、隊商は無事に隣町に到着いたしました！\n\n商人さまたちがとても感謝してくださっていますよ。\n「あのギルド、なかなかやるじゃないか」ですって！\n\nギルドの名前がどんどん広がっていきますね！",
     fail:"{m}……護衛体制を整えることができませんでした。\n\n冒険者の皆さんの経験と装備はそのままです。初日からやり直せますので、もう一度挑戦いたしましょう！",
@@ -456,7 +456,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.2.1</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.2.2</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -572,7 +572,7 @@ function GuildGame(){
   // ===== CHAR DETAIL =====
   if(sc==="charDetail"&&selC){const c=chars.find(x=>x.id===selC.id)||selC;
     return (<div style={cs}>
-      {dlg?.type==="confirmRetire"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={`${c.name}さんを引退させてもよろしいですか？ 装備は返却されます。`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{if(c.weapon)setPool(p=>p.map(x=>x.eqId===c.weapon&&x.assignedTo===c.id?{...x,assignedTo:null}:x));if(c.armor)setPool(p=>p.map(x=>x.eqId===c.armor&&x.assignedTo===c.id?{...x,assignedTo:null}:x));if(c.accessory)setPool(p=>p.map(x=>x.eqId===c.accessory&&x.assignedTo===c.id?{...x,assignedTo:null}:x));setChars(p=>p.map(x=>x.id===c.id?{...x,status:"retired",weapon:null,armor:null,accessory:null}:x));setDlg(null);chSc("home");}} style={{...bp,flex:1,background:`linear-gradient(180deg,${T.red},#802020)`}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
+
       {dlg?.type==="msg"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecSays text={dlg.text} rn={rName}/></Dialog>}
       <div style={hs}><button onClick={()=>{setSelC(null);chSc("home");}} style={{...bb,padding:"6px 14px",fontSize:13}}>← 戻る</button><span style={{color:T.gold,fontWeight:"bold",fontSize:14}}>冒険者詳細</span><div/></div>
       <div style={bs}><div style={{...ps,textAlign:"center"}}><Pt cid={c.classId} g={c.gender} sz="lg"/><div style={{fontSize:20,color:T.tb,fontWeight:"bold",marginTop:10}}>{c.name}</div><div style={{fontSize:14,color:T.td}}>Lv.{c.level} {c.className}（{c.gender}）</div><div style={{fontSize:12,color:c.status==="resting"?T.orange:c.status==="dispatched"?T.gold:T.green,marginTop:4,fontWeight:"bold"}}>{c.status==="resting"?`😴 休息中（残り${c.restDays}日）`:c.status==="dispatched"?"📤 派遣中":"✅ 待機中"}</div></div>
@@ -585,7 +585,7 @@ function GuildGame(){
               </div></div>);
           })}
         </div>
-        {c.status==="active"&&<button onClick={()=>setDlg({type:"confirmRetire"})} style={{...bb,width:"100%",color:T.red,borderColor:`${T.red}66`,marginTop:8}}>🚪 {c.name}を引退させる</button>}
+
       </div></div>);
   }
 
@@ -610,7 +610,7 @@ function GuildGame(){
   }
 
   // ===== QUEST BOARD =====
-  if(sc==="questBoard"){const avail=quests.filter(q=>q.status==="available");
+  if(sc==="questBoard"){const catOrder=["討伐","護衛","収集","探索","工作","生活"];const avail=[...quests.filter(q=>q.status==="available")].sort((a,b)=>(catOrder.indexOf(a.cat)||0)-(catOrder.indexOf(b.cat)||0));
     return (<div style={cs}><div style={hs}><button onClick={()=>{sfxClick();chSc("home");}} style={{...bb,padding:"6px 14px",fontSize:13}}>← 戻る</button><span style={{color:T.gold,fontWeight:"bold",fontSize:14}}>📋 依頼ボード</span><span style={{fontSize:12,color:T.td}}>{avail.length}件</span></div>
       <div style={bs}>
         <RecSays text={`${mt}、こちらが現在の依頼でございます。気になる依頼をタップして詳細をご確認くださいませ。`} rn={rName}/>
