@@ -301,7 +301,7 @@ const bd={...bb,opacity:0.35,cursor:"not-allowed"};
 function StatBar({label,current,required,color,maxRef}){const mx=maxRef||Math.max(required||0,current,30);const reqP=(required||0)/mx*100;const curP=Math.min(current/mx*100,100);const met=!required||current>=required;return (<div style={{marginBottom:5}}><div style={{display:"flex",justifyContent:"space-between",fontSize:14,color:T.text,marginBottom:2}}><span>{label}</span>{required?<span style={{color:met?T.green:T.red,fontWeight:"bold"}}>{current}/{required}</span>:<span style={{fontWeight:"bold"}}>{current}</span>}</div><div style={{height:8,background:"rgba(0,0,0,0.4)",borderRadius:4,overflow:"hidden",position:"relative"}}>{required>0&&<div style={{position:"absolute",left:`${Math.min(reqP,100)}%`,top:0,bottom:0,width:2,background:"rgba(255,255,255,0.5)",zIndex:1}}/>}<div style={{width:`${curP}%`,height:"100%",background:met?color:`${T.red}cc`,borderRadius:4,transition:"width 0.3s"}}/></div></div>);}
 function Pt({cid,g,sz}){const s=sz==="sm"?{width:44,height:44}:sz==="md"?{width:100,height:100}:sz==="lg"?{width:160,height:200}:{width:44,height:44};const src=gP(cid,g,sz==="lg"?"md":sz);return src?(<img src={src} style={{...s,borderRadius:sz==="lg"?12:8,objectFit:"cover"}} alt=""/>):(<div style={{...s,borderRadius:8,background:"#1a2a3a"}}/>);}
 function Rec({sz}){const s=sz||70;return (<img src={IMG.receptionist_md} style={{width:s,height:s,borderRadius:s>100?16:10,objectFit:"cover"}} alt=""/>);}
-function Dialog({children,onClose,btnText}){return (<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:16}}><div style={{...ps,maxWidth:460,width:"100%",maxHeight:"85vh",overflowY:"auto",border:`2px solid ${T.gold}44`}}>{children}{btnText&&<button onClick={()=>{sfxClick();onClose();}} style={{...bp,width:"100%",marginTop:12}}>{btnText}</button>}</div></div>);}
+function Dialog({children,onClose,btnText}){return (<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.88)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,padding:16}}><div style={{...ps,maxWidth:460,width:"100%",maxHeight:"85vh",overflowY:"auto",border:`2px solid ${T.gold}44`}}>{children}{btnText&&<button onClick={()=>{sfxClick();onClose();}} style={{...bp,width:"100%",marginTop:12}}>{btnText}</button>}</div></div>);}
 function RecBig({text,rn,children}){return (<div style={{textAlign:"center"}}><Rec sz={120}/><div style={{fontSize:12,color:T.gb,fontWeight:"bold",marginTop:8,marginBottom:8}}>{rn||"受付嬢"}</div>{children}{text&&text.split("\\n").map((l,i)=>(<p key={i} style={{fontSize:14,color:T.text,lineHeight:1.8,margin:"0 0 8px",textAlign:"left",minHeight:l?undefined:10}}>{l}</p>))}</div>);}
 function RecSays({text,rn,help,onHelp}){return (<div style={{...ps,display:"flex",gap:12,alignItems:"flex-start",background:"rgba(20,35,55,0.95)"}}><Rec sz={56}/><div style={{flex:1}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}><span style={{fontSize:12,color:T.gb,fontWeight:"bold"}}>{rn||"受付嬢"}</span>{help&&<span onClick={onHelp} style={{fontSize:11,color:T.accent,cursor:"pointer",padding:"2px 8px",border:`1px solid ${T.accent}44`,borderRadius:12}}>ヘルプ ❓</span>}</div><div style={{fontSize:14,color:T.text,fontStyle:"italic",lineHeight:1.7}}>{text}</div></div></div>);}
 
@@ -383,6 +383,7 @@ function GuildGame(){
       setSRes("success");setDlg({type:"sc_advance"});return;
     }
     setTransition(true);sfxDay();
+    setTimeout(()=>{setTransition(false);},2000); // safety: always remove overlay
     setTimeout(()=>{
       let nd=day+1,nm=mo,ny=yr;if(nd>30){nd=1;nm++;}if(nm>12){nm=1;ny++;}
       setDay(nd);setMo(nm);setYr(ny);const nSD=sD+1;setSD(nSD);
@@ -411,7 +412,7 @@ function GuildGame(){
       if(nl.length>0)setLogs(p=>[...nl,...p].slice(0,50));if(comp.length>0)setPRes(comp);
       setTimeout(()=>{setTransition(false);if(!scCleared)checkSc(nGold,nRep,chars,nSD);
         // Auto advance at deadline if cleared
-        if(scCleared&&nSD>=s0?.deadline){setSRes("success");setTimeout(()=>setDlg({type:"sc_advance"}),500);}
+        if(scCleared&&nSD>=s0?.deadline){setSRes("success");setDlg({type:"sc_advance"});}
       },400);
     },500);
   },[day,mo,yr,quests,chars,gl,rep,gold,sD,si,checkSc,sRes,maxQ,scCleared,s0]);
@@ -456,7 +457,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.3.0</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.3.1</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
