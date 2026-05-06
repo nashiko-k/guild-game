@@ -199,26 +199,26 @@ const SC=[
     fail:"{m}……盗賊団の壊滅に必要な戦力を集めることができませんでした。\n\n冒険者と装備はそのままですので、初日からやり直しましょう！",
     reward:{gold:800,rep:8}},
 ,
-  {id:4,title:"闇商人の摘発",deadline:14,maxM:8,cls:["warrior","mage","cleric","thief"],
-    intro:"{m}、ギルドの評判が広まり、領主から直々のご依頼が届きました。\n\n町の裏で暗躍する闇商人ネットワークを摘発してほしいとのことです。\n\n今回は盗賊クラスの冒険者が加入いたします！",
-    cond:"14日以内にギルドレベル5以上に到達し、4種類以上の依頼カテゴリを達成する必要がございます。",
-    req:{guildLevel:5,minQuestCats:4},
-    succ:"{m}、見事でございます！ 闇商人ネットワークを壊滅させました！",
-    fail:"{m}……残念ながら期限内に目標を達成できませんでした。",
+  {id:4,title:"不法占拠者の退去交渉",deadline:16,maxM:8,cls:["warrior","mage","cleric","thief"],
+    intro:"{m}、困った事態が発生いたしました。\n\n町の北にある鉱山に亜人種の集団が居座ってしまい、採掘が止まっております。\n領主さまは武力ではなく、対話と交渉による解決を望んでおいでです。\n\nただし、万が一に備えた実力も必要でしょう。\n\n今回は盗賊クラスの冒険者が加入いたします！",
+    cond:"16日以内にギルドレベル4以上に到達し、4種類以上の依頼カテゴリを達成する必要がございます。\n\n交渉ごとには多様な経験が求められます。さまざまな種類の依頼を幅広くこなしましょう。",
+    req:{guildLevel:4,minQuestCats:4},
+    succ:"{m}、素晴らしい手腕でございます！\n\n亜人種との交渉が成立し、鉱山の共同利用という形で双方が納得する結果となりました。\n\n力だけでなく知恵と魅力で道を切り開く……これぞ一流のギルドですね！",
+    fail:"{m}……残念ながら交渉をまとめるだけの信頼を築けませんでした。\n\n経験と装備はそのままです。もう一度挑戦いたしましょう。",
     reward:{gold:600,rep:6}},
-  {id:5,title:"古代遺跡の調査",deadline:16,maxM:10,cls:["warrior","mage","cleric","thief","elf"],
-    intro:"{m}、森の奥で古代の遺跡が発見されました！\n\n王国学術院からの依頼で、遺跡の調査と遺物の回収を行います。\n\n今回はエルフクラスの冒険者が加入いたします！",
-    cond:"16日以内にギルドレベル6以上に到達し、5種類以上の依頼カテゴリを達成する必要がございます。",
-    req:{guildLevel:6,minQuestCats:5},
-    succ:"{m}、素晴らしい成果でございます！ 古代の秘宝を発掘しました！",
-    fail:"{m}……遺跡の調査は期限内に完了できませんでした。",
-    reward:{gold:700,rep:7}},
-  {id:6,title:"王国防衛戦",deadline:18,maxM:12,cls:["warrior","mage","cleric","thief","elf","dwarf"],
-    intro:"{m}、一大事でございます！\n\n隣国の軍勢が国境に迫っているとの報告です。王国防衛のため、あらゆる冒険者の力を結集いたします。\n\n今回はドワーフクラスの冒険者が加入いたします！",
-    cond:"18日以内にギルドレベル7以上に到達し、全6カテゴリの依頼を達成する必要がございます。\n\nこれが最後のシナリオです。全力を尽くしましょう！",
-    req:{guildLevel:7,minQuestCats:6},
-    succ:"{m}、我々は勝ちました！！\n\n{m}の名は伝説として語り継がれることでしょう。\n本当にお疲れさまでございました！",
-    fail:"{m}……残念ながら防衛準備が整いませんでした。もう一度挑戦いたしましょう。",
+  {id:5,title:"季節素材の独占採取",deadline:18,maxM:10,cls:["warrior","mage","cleric","thief","elf"],
+    intro:"{m}、めったにない好機でございます！\n\n百年に一度だけ咲くという「黄金蓮華」の群生地が発見されました。\n開花期間は限られており、その間に大量の素材を採取する必要がございます。\n\n群生地までの道のりには危険な魔物が潜み、採取には専門知識も求められます。\n\n今回はエルフクラスの冒険者が加入いたします！",
+    cond:"18日以内にギルドレベル5以上に到達し、5種類以上の依頼カテゴリを達成する必要がございます。\n\n森の知識を持つエルフの力を活かし、採取と護衛を両立させましょう。",
+    req:{guildLevel:5,minQuestCats:5},
+    succ:"{m}、大成功でございます！\n\n黄金蓮華の採取に成功し、薬師ギルドから莫大な報酬をいただきました。\n\n自然と共に歩むギルドの姿勢が、エルフの里からも高く評価されております！",
+    fail:"{m}……残念ながら開花期間中に十分な成果を上げられませんでした。\n\n経験と装備はそのままです。もう一度挑戦いたしましょう。",
+    reward:{gold:800,rep:8}},
+  {id:6,title:"廃村の復興支援",deadline:20,maxM:12,cls:["warrior","mage","cleric","thief","elf","dwarf"],
+    intro:"{m}、領主さまから最後の大仕事を仰せつかりました。\n\n3年前に魔物の大群に襲われ廃墟と化した「風見の村」……。\n瓦礫の撤去、防壁の再建、残存する魔物の掃討、そして住民の帰還支援。\nすべてを成し遂げ、村を蘇らせるのが今回の任務です。\n\nこれまで培ったすべての力が試されます。\n\n今回はドワーフクラスの冒険者が加入いたします！",
+    cond:"20日以内にギルドレベル6以上に到達し、全6カテゴリの依頼を達成する必要がございます。\n\n討伐、護衛、収集、探索、工作、生活……あらゆる分野の力を結集して、村の復興を成し遂げましょう！\n\nこれが最後のシナリオです。全力を尽くしてくださいませ！",
+    req:{guildLevel:6,minQuestCats:6},
+    succ:"{m}、やり遂げましたね！！\n\n風見の村に再び人の暮らしが戻りました。\n子供たちの笑い声が響き、煙突から煙が立ち上り、畑には緑が芽吹いています。\n\nこれは{m}と、このギルドの冒険者たちが成し遂げた偉業です。\n\nギルドの名は、この地の歴史に永く刻まれることでしょう。\n\n本当にお疲れさまでございました！",
+    fail:"{m}……復興は道半ばとなってしまいました。\n\nですが、これまでの努力は無駄ではございません。経験と装備はそのままです。\nもう一度、村の人々のために立ち上がりましょう！",
     reward:{gold:1000,rep:10}}];
 
 function getQF(si){
@@ -456,7 +456,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.2.2</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.3.0</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -598,7 +598,7 @@ function GuildGame(){
     <div style={bs}>
       <RecSays text={`${mt}、装備品をお求めでしたらお声がけくださいませ。`} rn={rName} help={true} onHelp={()=>setDlg({type:"help",text:"武器・防具・アクセサリはギルドの共有財産として管理されます。\n\n冒険者詳細画面で装備の付け外しができます。\n\nクラスによって装備できないものもございますのでご注意くださいませ。"})}/>
       {["weapon","armor","accessory"].map(type=>(<div key={type} style={ps}><div style={{fontSize:14,color:T.td,marginBottom:8,fontWeight:"bold"}}>{type==="weapon"?"⚔️ 武器":type==="armor"?"🛡️ 防具":"💍 アクセサリ"}</div>
-        {shopEQ.filter(i=>i.type===type).map(item=>{const owned=pool.filter(p=>p.eqId===item.id).length;return (<div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${T.pb}22`}}>
+        {shopEQ.filter(i=>i.type===type).sort((a,b)=>{const so={combat:0,intel:1,charm:2};return(so[a.stat]??3)-(so[b.stat]??3)||(a.scenario||0)-(b.scenario||0);}).map(item=>{const owned=pool.filter(p=>p.eqId===item.id).length;return (<div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${T.pb}22`}}>
           <div><div style={{fontSize:14,color:eqRarityColor(item.bonus)}}><span style={{fontSize:10,marginRight:4}}>{eqRarityLabel(item.bonus)}</span>{item.name} {owned>0&&<span style={{fontSize:11,color:T.accent}}>（所持:{owned}）</span>}</div><div style={{fontSize:11,color:T.td}}>{item.desc}{item.cls?` ［${item.cls.map(c=>CLS[c]?.name).join("・")}］`:""}</div></div>
           <button onClick={()=>{if(gold>=item.price)setDlg({type:"confirmBuy",item});}} style={gold>=item.price?{...bb,padding:"6px 14px",fontSize:13}:bd}>{item.price} G</button>
         </div>);})}</div>))}
