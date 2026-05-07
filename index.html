@@ -398,6 +398,15 @@ function GuildGame(){
   const chSc=useCallback(s=>{setFi(false);setTimeout(()=>{setSc(s);setFi(true);},120);},[]);
   useEffect(()=>{if((sc==="home"||sc==="questBoard")&&quests.filter(q=>q.status==="available").length===0){const keep=quests.filter(q=>q.status==="dispatched");setQuests([...keep,...genQ(si,keep,maxQ,doneQTitles)]);}},[sc]);
 
+  // Trigger sc_intro when si changes (new scenario started)
+  const [needsIntro,setNeedsIntro]=useState(false);
+  useEffect(()=>{
+    if(needsIntro&&si>=0&&SC[si]){
+      setNeedsIntro(false);
+      setDlg({type:"sc_intro"});
+    }
+  },[needsIntro,si]);
+
   const checkSc=useCallback((g,r,cs,d)=>{
     if(!s0||sRes||scCleared)return;const req=s0.req;const mem=cs.filter(c=>c.status!=="retired").length;
     let cgl=0;for(let i=GL.length-1;i>=0;i--){if(r>=GL[i]){cgl=i;break;}}
@@ -489,7 +498,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.2</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.3</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -535,7 +544,7 @@ function GuildGame(){
             setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));
             setSi(ni);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());
             setQuests(prev=>prev.filter(q=>q.status==="dispatched"));
-            setDay(1);setDlg({type:"sc_intro"});
+            setDay(1);setDlg(null);setNeedsIntro(true);
           }else{
             setSRes(null);setScCleared(false);setDoneQCats(new Set());
             setDlg({type:"msg",text:"全シナリオを達成しました！ おめでとうございます！\n\nこれからも自由にギルドを運営していきましょう。"});
