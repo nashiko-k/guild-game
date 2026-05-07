@@ -457,7 +457,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:10,color:T.td,opacity:0.6}}>ver 1.3.1</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.3.2</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -495,7 +495,20 @@ function GuildGame(){
       {dlg?.type==="sc_cond"&&<Dialog onClose={()=>{setDlg(null);}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>📋 達成条件</div><RecBig text={s0.cond.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDay(1);setQuests(prev=>prev.filter(q=>q.status==="dispatched"));setLogs([]);setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_reward"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecBig text={`${mt}、報酬のご報告です！\n\n💰 ${s0.reward.gold}ゴールドをお受け取りくださいませ。\n⭐ 評判が${s0.reward.rep}上がりました。\n\n期限までの残り日数は自由にお使いいただけます。準備が整いましたら、次のシナリオに進みましょう！`} rn={rName}/></Dialog>}
-      {dlg?.type==="sc_advance"&&<Dialog onClose={()=>{setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));if(si<SC.length-1){const ni=si+1;setSi(ni);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setQuests(prev=>prev.filter(q=>q.status==="dispatched"));setDlg({type:"sc_intro"});}else{setSRes(null);setScCleared(false);setDoneQCats(new Set());setDlg({type:"msg",text:"全シナリオを達成しました！ おめでとうございます！\n\nこれからも自由にギルドを運営していきましょう。"});}}} btnText="確認"><RecBig text={si<SC.length-1?`${mt}、期限となりました。次のシナリオに進みましょう！`:`${mt}、全てのシナリオを達成されました！\n\n本当にお疲れさまでございました！`} rn={rName}/></Dialog>}
+      {dlg?.type==="sc_advance"&&<Dialog onClose={()=>{
+        const isLast=si>=SC.length-1;
+        if(!isLast){
+          const ni=si+1;
+          setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));
+          setSi(ni);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());
+          setQuests(prev=>prev.filter(q=>q.status==="dispatched"));
+          setDlg(null);
+          setTimeout(()=>setDlg({type:"sc_intro"}),200);
+        }else{
+          setSRes(null);setScCleared(false);setDoneQCats(new Set());
+          setDlg({type:"msg",text:"全シナリオを達成しました！ おめでとうございます！\n\nこれからも自由にギルドを運営していきましょう。"});
+        }
+      }} btnText="確認"><RecBig text={si<SC.length-1?`${mt}、期限となりました。次のシナリオに進みましょう！`:`${mt}、全てのシナリオを達成されました！\n\n本当にお疲れさまでございました！`} rn={rName}/></Dialog>}
       {dlg?.type==="dispatched"&&<Dialog onClose={()=>{setDlg(null);}} btnText="確認"><RecSays text={`「${dlg.title}」の依頼に、${dlg.names}を派遣いたしました。無事に帰ってきてくれるといいですね。`} rn={rName}/></Dialog>}
       {dlg?.type==="confirmDay"&&<Dialog btnText={null} onClose={()=>setDlg(null)}><RecSays text={disp.length===0&&avC.length>0?`${mt}、きょうはまだ依頼を受けていらっしゃいませんが、よろしいのですか？`:`${mt}、きょうのお仕事はこれまでにいたしますか？`} rn={rName}/><div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setDlg(null);advDay();}} style={{...bp,flex:1}}>はい</button><button onClick={()=>setDlg(null)} style={{...bb,flex:1}}>いいえ</button></div></Dialog>}
       {dlg?.type==="help"&&<Dialog onClose={()=>setDlg(null)} btnText="閉じる"><RecBig text={dlg.text} rn={rName}/></Dialog>}
