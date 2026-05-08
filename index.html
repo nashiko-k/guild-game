@@ -277,7 +277,7 @@ return ALL.filter(q=>q.sc<=si);
 
 
 function gid(){return Math.random().toString(36).substr(2,9);}
-function genQ(si,cur,mx,done){const ts=getQF(si);const av=cur.filter(q=>q.status==="available");const t=Math.max(0,(mx||3)-av.length);if(t<=0)return[];const nq=[];const used=new Set([...cur.filter(q=>q.status==="available"||q.status==="dispatched").map(q=>q.title),...(done||[])]);const avail=ts.filter(x=>!used.has(x.title));
+function genQ(si,cur,mx,done){const ts=getQF(si);const av=cur.filter(q=>q.status==="available");const t=Math.max(0,(mx||3)-av.length);if(t<=0)return[];const nq=[];const used=new Set([...cur.filter(q=>q.status==="available"||q.status==="dispatched").map(q=>q.title),...(done||[])]);let avail=ts.filter(x=>!used.has(x.title));if(avail.length===0){const used2=new Set(cur.filter(q=>q.status==="available"||q.status==="dispatched").map(q=>q.title));avail=ts.filter(x=>!used2.has(x.title));}
   const curCats=new Set(av.map(q=>q.cat));
   const need=[];
   if(!curCats.has("討伐")){const c=avail.findIndex(x=>x.cat==="討伐");if(c>=0)need.push(avail.splice(c,1)[0]);}
@@ -497,7 +497,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.5</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.6</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -533,7 +533,7 @@ function GuildGame(){
       </Dialog>}
       {dlg?.type==="sc_intro"&&s0&&<Dialog onClose={()=>{const cls=SC_NEW_CLASSES[si]||[];const nm=[];cls.forEach(c=>{["m","f"].forEach(g=>{const name=getDefaultName(c,g);nm.push({classId:c,gender:g==="m"?"男":"女",name:name||""});});});if(nm.length>0){setNewMembers(nm);setDlg({type:"name_new_members"});}else{setDlg({type:"sc_cond"});}}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>シナリオ{s0.id}「{s0.title}」</div><RecBig text={s0.intro.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_cond"&&s0&&<Dialog onClose={()=>{setDlg(null);}} btnText="はい"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>📋 達成条件</div><RecBig text={s0.cond.replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
-      {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDay(1);setQuests(prev=>prev.filter(q=>q.status==="dispatched"));setLogs([]);setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
+      {dlg?.type==="sc_end"&&<Dialog onClose={()=>{if(dlg.result==="success"){setGold(g=>g+(s0?.reward?.gold||0));setRep(r=>r+(s0?.reward?.rep||0));setDlg({type:"sc_reward"});}else{setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDoneQTitles([]);setDay(1);setQuests(prev=>prev.filter(q=>q.status==="dispatched"));setLogs([]);setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));setDlg(null);}}} btnText="確認"><div style={{fontSize:15,color:T.gb,fontWeight:"bold",marginBottom:12,textAlign:"center"}}>{dlg.result==="success"?"🎉 ミッション達成！":"💀 ミッション失敗"}</div><RecBig text={(dlg.result==="success"?s0.succ:s0.fail).replace(/\{m\}/g,mt)} rn={rName}/></Dialog>}
       {dlg?.type==="sc_reward"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecBig text={`${mt}、報酬のご報告です！\n\n💰 ${s0.reward.gold}ゴールドをお受け取りくださいませ。\n⭐ 評判が${s0.reward.rep}上がりました。\n\n期限までの残り日数は自由にお使いいただけます。準備が整いましたら、次のシナリオに進みましょう！`} rn={rName}/></Dialog>}
       {dlg?.type==="sc_advance"&&<Dialog onClose={()=>{
         try{
@@ -543,7 +543,7 @@ function GuildGame(){
           });
           if(si<SC.length-1){
             setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));
-            setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());
+            setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDoneQTitles([]);
             setQuests(prev=>prev.filter(q=>q.status==="dispatched"));
             setDay(1);setDlg(null);setNeedsIntro(true);
           }else{
@@ -579,7 +579,7 @@ function GuildGame(){
         {!s0&&si>=0&&(<div style={{...ps,background:"rgba(80,20,20,0.9)",borderColor:`${T.red}88`,marginBottom:12}}>
           <div style={{fontSize:14,color:T.red,fontWeight:"bold",marginBottom:8}}>⚠️ シナリオデータの不整合を検出</div>
           <div style={{fontSize:13,color:T.text,marginBottom:12}}>シナリオ番号 (si={si}) が無効な範囲です。以下から選んで復旧してください：</div>
-          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{SC.map((s,i)=>(<button key={i} onClick={()=>{setSi(i);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());sfxClick();}} style={{...bb,fontSize:12,padding:"6px 10px"}}>SC{s.id}: {s.title}</button>))}</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{SC.map((s,i)=>(<button key={i} onClick={()=>{setSi(i);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());setDoneQTitles([]);sfxClick();}} style={{...bb,fontSize:12,padding:"6px 10px"}}>SC{s.id}: {s.title}</button>))}</div>
         </div>)}
         {s0&&(<div style={{...ps,background:scCleared?"rgba(20,60,30,0.9)":dLeft<=3?"rgba(80,20,20,0.9)":"rgba(30,20,50,0.9)",borderColor:scCleared?`${T.green}88`:dLeft<=3?`${T.red}88`:`${T.gold}44`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
