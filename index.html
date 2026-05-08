@@ -396,7 +396,7 @@ function GuildGame(){
   }
 
   const chSc=useCallback(s=>{setFi(false);setTimeout(()=>{setSc(s);setFi(true);},120);},[]);
-  useEffect(()=>{if((sc==="home"||sc==="questBoard")&&quests.filter(q=>q.status==="available").length===0){const keep=quests.filter(q=>q.status==="dispatched");setQuests([...keep,...genQ(si,keep,maxQ,doneQTitles)]);}},[sc]);
+  useEffect(()=>{if((sc==="home"||sc==="questBoard")&&quests.filter(q=>q.status==="available").length===0){const keep=quests.filter(q=>q.status==="dispatched");setQuests([...keep,...genQ(si,keep,maxQ,doneQTitles)]);}},[sc,si]);
 
   // Trigger sc_intro when si changes (new scenario started)
   const [needsIntro,setNeedsIntro]=useState(false);
@@ -498,7 +498,7 @@ function GuildGame(){
   const transOverlay=transition?<div style={{position:"fixed",inset:0,background:"#000",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:T.gold,fontSize:18}}>🌙</div></div>:null;
 
   // ===== TITLE =====
-  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.3</div></div></div>);
+  if(sc==="title")return (<div style={{...cs,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:20,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={{background:"rgba(10,20,35,0.85)",borderRadius:16,padding:"36px 28px",maxWidth:420,width:"100%"}}><div style={{fontSize:13,color:T.td,letterSpacing:6,marginBottom:10}}>GUILD MASTER</div><h1 style={{fontSize:28,color:T.gb,marginBottom:12}}>冒険者ギルド経営記</h1><p style={{color:T.td,marginBottom:32,fontSize:14}}>金と名声を手にし、最強のギルドを築き上げよ</p><button style={{...bp,fontSize:16,padding:"14px 40px",width:"100%"}} onClick={()=>{sfxClick();setSetupStep(1);chSc("setup");}}>ゲームスタート</button><div style={{display:"flex",gap:8,marginTop:12,width:"100%"}}><button style={{...bb,flex:1,fontSize:13,padding:"10px"}} onClick={()=>{try{const raw=localStorage.getItem("guild_game_save");if(raw){const d=JSON.parse(raw);loadGame();}}catch(e){}}}>📂 つづきから</button></div><div style={{marginTop:12,fontSize:13,color:T.td,opacity:0.6}}>ver 1.4.4</div></div></div>);
 
   // ===== SETUP =====
   if(sc==="setup")return (<div style={{...cs,backgroundImage:`url(${IMG.guild_hall})`,backgroundSize:"cover",backgroundPosition:"center"}}><div style={bs}><div style={{...ps,marginTop:30,background:"rgba(12,22,38,0.96)",padding:24}}>
@@ -538,11 +538,13 @@ function GuildGame(){
       {dlg?.type==="sc_reward"&&<Dialog onClose={()=>setDlg(null)} btnText="確認"><RecBig text={`${mt}、報酬のご報告です！\n\n💰 ${s0.reward.gold}ゴールドをお受け取りくださいませ。\n⭐ 評判が${s0.reward.rep}上がりました。\n\n期限までの残り日数は自由にお使いいただけます。準備が整いましたら、次のシナリオに進みましょう！`} rn={rName}/></Dialog>}
       {dlg?.type==="sc_advance"&&<Dialog onClose={()=>{
         try{
-          const isLast=si>=SC.length-1;
-          if(!isLast){
-            const ni=si+1;
+          setSi(prev=>{
+            if(prev>=SC.length-1)return prev; // already at last, don't advance
+            return prev+1;
+          });
+          if(si<SC.length-1){
             setChars(p=>p.map(c=>c.status==="resting"?{...c,status:"active",restDays:0}:c));
-            setSi(ni);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());
+            setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());
             setQuests(prev=>prev.filter(q=>q.status==="dispatched"));
             setDay(1);setDlg(null);setNeedsIntro(true);
           }else{
@@ -575,6 +577,11 @@ function GuildGame(){
       <div style={hs}><div style={{display:"flex",gap:8,alignItems:"baseline"}}><span style={{color:T.gold,fontWeight:"bold",fontSize:15}}>{gName}</span><span style={{fontSize:14,color:T.tb}}>Lv.{gl}</span><span style={{fontSize:13,color:T.td}}>評判 {rep}{typeof nGxp==="number"?`/${nGxp}`:""}</span></div><div style={{display:"flex",gap:10,alignItems:"center",fontSize:14}}><span style={{color:T.gb,fontWeight:"bold"}}>💰 {gold.toLocaleString()} G</span><span style={{color:T.td,fontSize:12}}>{mo}月{day}日</span></div></div>
       <div style={{display:"flex",justifyContent:"flex-end",gap:8,padding:"4px 16px",background:"rgba(10,20,35,0.9)"}}><span onClick={()=>{if(bgmOn){stopBGM();setBgmOn(false);}else{startBGM();setBgmOn(true);}}} style={{cursor:"pointer",fontSize:13,padding:"4px 10px",borderRadius:6,background:bgmOn?T.gold+"33":"rgba(60,120,180,0.2)",border:`1px solid ${T.gold}44`,color:T.td}}>{bgmOn?"🔊 BGM ON":"🔇 BGM OFF"}</span><span onClick={saveGame} style={{cursor:"pointer",fontSize:13,padding:"4px 10px",borderRadius:6,background:"rgba(60,120,180,0.2)",border:`1px solid ${T.gold}44`,color:T.td}}>💾 セーブ</span></div>
       <div style={bs}>
+        {!s0&&si>=0&&(<div style={{...ps,background:"rgba(80,20,20,0.9)",borderColor:`${T.red}88`,marginBottom:12}}>
+          <div style={{fontSize:14,color:T.red,fontWeight:"bold",marginBottom:8}}>⚠️ シナリオデータの不整合を検出</div>
+          <div style={{fontSize:13,color:T.text,marginBottom:12}}>シナリオ番号 (si={si}) が無効な範囲です。以下から選んで復旧してください：</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{SC.map((s,i)=>(<button key={i} onClick={()=>{setSi(i);setSD(0);setSRes(null);setScCleared(false);setDoneQCats(new Set());sfxClick();}} style={{...bb,fontSize:12,padding:"6px 10px"}}>SC{s.id}: {s.title}</button>))}</div>
+        </div>)}
         {s0&&(<div style={{...ps,background:scCleared?"rgba(20,60,30,0.9)":dLeft<=3?"rgba(80,20,20,0.9)":"rgba(30,20,50,0.9)",borderColor:scCleared?`${T.green}88`:dLeft<=3?`${T.red}88`:`${T.gold}44`}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
             <div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:14,color:T.gb,fontWeight:"bold"}}>シナリオ{s0.id}「{s0.title}」</span>
